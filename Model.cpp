@@ -1,23 +1,16 @@
-#include <iostream>
-#include <cstring>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/ip.h>
-#include <arpa/inet.h>
-#include <net/ethernet.h>
-#include <net/if.h>
-#include <iomanip>
-#include <netinet/udp.h>
-#include <netinet/tcp.h>
-#include <chrono>
+#include "Model.h"
 
-using namespace std;
+Model::Model()
+{
+    //ctor
+}
 
-// sources: https://www.opensourceforu.com/2015/03/a-guide-to-using-raw-sockets/
-//  https://beej.us/guide/bgnet/html/split/
-//  https://www.binarytides.com/packet-sniffer-code-c-linux/
+Model::~Model()
+{
+    //dtor
+}
 
-void processPacket(unsigned char *buffer, int size) {
+void Model::processPacket(unsigned char *buffer, int size) {
     // Your packet processing logic goes here
     // This function can analyze and print information about the packet
     // For simplicity, this example just prints the first few bytes of the packet
@@ -25,7 +18,7 @@ void processPacket(unsigned char *buffer, int size) {
     
 }
 
-void print_ethernet_header(unsigned char *buffer, int size) {
+void Model::print_ethernet_header(unsigned char *buffer, int size) {
     struct ethhdr *eth = (struct ethhdr *)(buffer);
 
     cout << "\nEthernet Header\n" << endl;
@@ -46,7 +39,7 @@ void print_ethernet_header(unsigned char *buffer, int size) {
     cout << "\t|-Protocol : " << (unsigned short)eth->h_proto << endl;
 }
 
-void print_ip_header(unsigned char *buffer, int size) {
+void Model::print_ip_header(unsigned char *buffer, int size) {
     struct sockaddr_in source, dest;
 
     unsigned short iphdrlen;
@@ -70,7 +63,7 @@ void print_ip_header(unsigned char *buffer, int size) {
     cout << "\t|-Destination IP : " << inet_ntoa(dest.sin_addr) << endl;
 }
 
-void printProtocol(int prot){
+void Model::printProtocol(int prot){
 
     switch(prot) {
     case 0: cout << "	HOPOPT	IPv6 Hop-by-Hop Option	Y	[RFC8200] " << endl; break;
@@ -234,7 +227,7 @@ void printProtocol(int prot){
     }
 }
 
-void print_udp_header(unsigned char *buffer, int size) {
+void Model::print_udp_header(unsigned char *buffer, int size) {
     // getting actual size of IP header
 
     // getting pointer to udp header
@@ -245,7 +238,7 @@ void print_udp_header(unsigned char *buffer, int size) {
     cout << "\t|-UDP Checksum : " << ntohs(udp->check) << endl;  //  ntohs() function converts the unsigned short integer netshort from network byte order to host byte order.
 }
 
-void print_tcp_header(unsigned char *buffer, int size) {
+void Model::print_tcp_header(unsigned char *buffer, int size) {
     // getting pointer to tcp header
     struct tcphdr *tcp = (struct tcphdr *)(buffer + size + sizeof(struct ethhdr));
     cout << "\nTCP Header\n";
@@ -266,73 +259,22 @@ void print_tcp_header(unsigned char *buffer, int size) {
     cout << "\t|-Urgent Pointer       : " << tcp->urg_ptr << endl;    
 }
 
-typedef std::chrono::high_resolution_clock Clock;
+void Model::protoclSwitch(unsigned char *buffer) {
+    struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
+    unsigned short iphdrlen;
+    iphdrlen = ip->ihl * 4;
 
-int main(int argc, char *argv[]) {
-
-    if (argc != 2) {
-        cout << "Usage: ./sniffer <interface>" << endl;
-        return 1;
+    int protocol = ip->protocol;
+    cout << "Protocol: " << protocol << endl;   
+    switch(protocol){
+        case 6:
+            print_udp_header(buffer, iphdrlen);
+            break;
+        case 17:
+            print_tcp_header(buffer, iphdrlen);
+            break;
+        default:
+            printProtocol(protocol);
     }
-    int seconds = atoi(argv[1]);
-    auto startTime = std::chrono::steady_clock::now();
-    auto stopTime = startTime + std::chrono::seconds(seconds);
-    auto t1 = Clock::now();
-
-    int status;
-    struct addrinfo *hints;
-    struct addrinfo *servinfo;
-    struct sockaddr_in source, dest;
-
-    // ipv4 socket with raw protocol
-    int sock = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
-
-    if (sock < 0) {
-        perror("Error creating socket");
-        return 1;
-    }
-
-    while (std::chrono::steady_clock::now() < stopTime) {
-        // 65535 is max packet size
-        unsigned char buffer[65535];
-        memset(buffer, 0, sizeof(buffer));
-
-        struct sockaddr saddr;
-        int saddr_len = sizeof(saddr);
-
-        int recv_bytes = recvfrom(sock, buffer, sizeof(buffer), 0, &saddr, (socklen_t *)&saddr_len);
-
-        if (recv_bytes < 0) {
-            perror("Error receiving packet");
-            return 1;
-        }
-
-        print_ethernet_header(buffer, recv_bytes);
-
-        print_ip_header(buffer, sizeof(struct ethhdr));
-
-        struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
-        unsigned short iphdrlen;
-        iphdrlen = ip->ihl * 4;
-
-        int protocol = ip->protocol;
-        cout << "Protocol: " << protocol << endl;   
-        switch(protocol){
-            case 6:
-                print_udp_header(buffer, iphdrlen);
-                break;
-            case 17:
-                print_tcp_header(buffer, iphdrlen);
-                break;
-            default:
-                printProtocol(protocol);
-        }
-
-        // Print the packet
-        processPacket(buffer, recv_bytes);
-    }
-
-    close(sock);
-
-    return 0;
 }
+
