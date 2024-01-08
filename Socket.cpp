@@ -1,16 +1,14 @@
 #include "Socket.h"
 
 Socket::Socket() {
-    cout << "Socket created" << endl;
 }
 
 Socket::~Socket() {
-    cout << "Socket destroyed" << endl;
 }
 
 int Socket::createSocket() {
-    sock = socket(AF_INET, SOCK_RAW, IPPROTO_UDP);
-    if (socket < 0) {
+    sock = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_ALL));;
+    if (sock < 0) {
         cout << "Socket creation failed" << endl;
         return -1;
     }
@@ -27,12 +25,12 @@ int Socket::closeSocket() {
     return 0;
 }
 
-int Socket::receivePacket(unsigned char *buffer, int size) {
-
+int Socket::receivePacket() {
+    
     memset(buffer, 0, sizeof(buffer));
     struct sockaddr saddr;
     int saddr_len = sizeof(saddr);
-    int recv_bytes = recvfrom(sock, buffer, sizeof(buffer), 0, &saddr, (socklen_t *)&saddr_len);
+    int recv_bytes = recvfrom(sock,buffer,65536,0,&saddr,(socklen_t *)&saddr_len);
     if (recv_bytes < 0) {
         cout << "Error receiving packet" << endl;
         return -1;

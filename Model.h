@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <netinet/udp.h>
 #include <netinet/tcp.h>
+#include <fstream>
 
 using namespace std;
 
@@ -19,13 +20,13 @@ class Model {
 public:
     Model();
     ~Model();
-    void processPacket(unsigned char *buffer, int size);
-    void print_ethernet_header(unsigned char *buffer, int size);
-    void print_ip_header(unsigned char *buffer, int size);
-    void printProtocol(int prot);
-    void print_udp_header(unsigned char *buffer, int size);
-    void print_tcp_header(unsigned char *buffer, int size);
-    void protoclSwitch(unsigned char *buffer);
+    void processPacket(ofstream&  out, unsigned char *buffer, int size);
+    void print_ethernet_header(ofstream&  out, unsigned char *buffer, int size);
+    void print_ip_header(ofstream&  out, unsigned char *buffer, int size);
+    void printProtocol(ofstream&  out, int prot);
+    void print_udp_header(ofstream&  out, unsigned char *buffer, int size);
+    void print_tcp_header(ofstream&  out, unsigned char *buffer, int size);
+    void protocolSwitch(ofstream&  out, unsigned char *buffer);
 
 private:
 

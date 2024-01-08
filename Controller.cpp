@@ -22,18 +22,20 @@ void Controller::run()
 
     // ipv4 socket with raw protocol
     socket->createSocket();
+    ofstream &out = view->getFile();
+    cout << "File created" << endl;
 
     while (std::chrono::steady_clock::now() < stopTime) {
-        int recv_bytes = socket->receivePacket(socket->getBuffer(), sizeof(socket->getBuffer()));
-
-        model->print_ethernet_header(socket->getBuffer(), recv_bytes);
-
-        model->print_ip_header(socket->getBuffer(), sizeof(struct ethhdr));
-
-        model->protoclSwitch(socket->getBuffer());
-
-        // Print the packet
-        model->processPacket(socket->getBuffer(), recv_bytes);
+        cout << "Receiving packets" << endl;
+        int recv_bytes = socket->receivePacket();
+        cout << "Printing ethernet header" << endl;
+        model->print_ethernet_header(out, socket->getBuffer(), recv_bytes);
+        cout << "Printing ip header" << endl;
+        model->print_ip_header(out, socket->getBuffer(), sizeof(struct ethhdr));
+        cout << "Printing protocol" << endl;
+        model->protocolSwitch(out, socket->getBuffer());
+        cout << "Processing packet" << endl;
+        model->processPacket(out, socket->getBuffer(), recv_bytes);
     }
 
     socket->closeSocket();

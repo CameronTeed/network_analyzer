@@ -11,9 +11,10 @@ class View
 public:
     View();
     ~View();
-    int createFile();
-    ofstream* getFile();
+    ofstream& getFile();
+    void deleteFile();
     private:
+        int createFile();
         ofstream* file;
 };
 
