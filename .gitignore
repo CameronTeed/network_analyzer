@@ -1,1 +1,8 @@
 /network_analyzer.code-workspace
+/Socket.o
+/Controller.o
+/View.o
+/Model.o
+/main.o
+/main
+/output.txt

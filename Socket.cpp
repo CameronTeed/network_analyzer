@@ -25,12 +25,13 @@ int Socket::closeSocket() {
     return 0;
 }
 
+// I think because im using wsl, there alot of udp being sent, will try in vm
 int Socket::receivePacket() {
     
     memset(buffer, 0, sizeof(buffer));
     struct sockaddr saddr;
     int saddr_len = sizeof(saddr);
-    int recv_bytes = recvfrom(sock,buffer,65536,0,&saddr,(socklen_t *)&saddr_len);
+    int recv_bytes = recvfrom(sock,buffer,65535,0,&saddr,(socklen_t *)&saddr_len);
     if (recv_bytes < 0) {
         cout << "Error receiving packet" << endl;
         return -1;

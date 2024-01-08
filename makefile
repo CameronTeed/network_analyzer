@@ -20,4 +20,4 @@ Controller.o: Controller.cpp
 
 
 clean: 
-	rm -f ./main $(objects)
+	rm -f ./main ./output.txt $(objects)
