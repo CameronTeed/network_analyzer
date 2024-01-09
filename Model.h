@@ -6,7 +6,10 @@
 #include <sys/socket.h>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
+#include<linux/if_packet.h>
+#include<netinet/in.h>	
 #include <net/ethernet.h>
+#include<netinet/if_ether.h> 
 #include <net/if.h>
 #include <iomanip>
 #include <netinet/udp.h>
@@ -19,6 +22,7 @@ class Model {
 
 public:
     Model();
+    Model(int testing);
     ~Model();
     void processPacket(ofstream&  out, unsigned char *buffer, int size);
     void print_ethernet_header(ofstream&  out, unsigned char *buffer, int size);
@@ -29,7 +33,9 @@ public:
     void protocolSwitch(ofstream&  out, unsigned char *buffer);
 
 private:
-
+    int iphdrlen;
+    unsigned int protocol;
+    int testing;
 };
 
 

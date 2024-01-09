@@ -12,7 +12,6 @@ public:
     View();
     ~View();
     ofstream& getFile();
-    void deleteFile();
     private:
         int createFile();
         ofstream* file;

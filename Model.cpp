@@ -2,6 +2,12 @@
 
 Model::Model()
 {
+    testing = 0;
+    //ctor
+}
+
+Model::Model(int testing): testing(testing)
+{
     //ctor
 }
 
@@ -10,12 +16,25 @@ Model::~Model()
     //dtor
 }
 
-void Model::processPacket(ofstream& out, unsigned char *buffer, int size) {
+void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
     // Your packet processing logic goes here
     // This function can analyze and print information about the packet
     // For simplicity, this example just prints the first few bytes of the packet
+    // if (testing == 1) {
+    //     return;
+    // }
+    unsigned char* data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
+    out << "\nData\n";
+    int remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
+    for (int i = 0; i < remaining_data; i++) {
+        if (i != 0 && i % 16 == 0)
+            out << "\n";
+         if (isprint(data[i])) {
+            out << static_cast<char>(data[i]);
+         }
+    }
 
-    
+    out << "\n";
 }
 
 void Model::print_ethernet_header(ofstream&  out, unsigned char *buffer, int size) {
@@ -42,13 +61,12 @@ void Model::print_ethernet_header(ofstream&  out, unsigned char *buffer, int siz
 void Model::print_ip_header(ofstream&  out, unsigned char *buffer, int size) {
     struct sockaddr_in source, dest;
 
-    unsigned short iphdrlen;
-
     struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
     memset(&source, 0, sizeof(source));
     source.sin_addr.s_addr = ip->saddr;
     memset(&dest, 0, sizeof(dest));
     dest.sin_addr.s_addr = ip->daddr;
+    iphdrlen =ip->ihl*4;
 
     out << "\nIP Header\n" << endl;
     out << "\t|-Version : " << (unsigned int)ip->version << endl;
@@ -260,19 +278,18 @@ void Model::print_tcp_header(ofstream&  out, unsigned char *buffer, int size) {
 }
 
 void Model::protocolSwitch(ofstream& out, unsigned char *buffer) {
-    struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
-    unsigned short iphdrlen;
-    iphdrlen = ip->ihl * 4;
+    struct iphdr *ip = (struct iphdr*)(buffer + sizeof (struct ethhdr));
 
-    int protocol = ip->protocol;
-    cout << "Protocol: " << protocol << endl;
-    out << "Protocol: " << protocol << endl;   
+    protocol = static_cast<unsigned int>(ip->protocol);
+    out << "\nProtocol : "; 
+    out << protocol << endl;
+    printProtocol(out, protocol);
     switch(protocol){
         case 6:
-            print_udp_header(out, buffer, iphdrlen);
+            print_tcp_header(out, buffer, iphdrlen);
             break;
         case 17:
-            print_tcp_header(out, buffer, iphdrlen);
+            print_udp_header(out, buffer, iphdrlen);
             break;
         default:
             printProtocol(out, protocol);

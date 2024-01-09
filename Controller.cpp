@@ -1,9 +1,11 @@
 #include "Controller.h"
 
-Controller::Controller(int timeSeconds)
+Controller::Controller(int timeSeconds, int displayData, int testing)
 {
     this->timeSeconds = timeSeconds;
-    this->model = new Model();
+    this->displayData = displayData;
+    this->testing = testing;
+    this->model = new Model(testing);
     this->view = new View();
     this->socket = new Socket();
 }
@@ -35,6 +37,7 @@ void Controller::run()
         cout << "Printing protocol" << endl;
         model->protocolSwitch(out, socket->getBuffer());
         cout << "Processing packet" << endl;
+        if (displayData == 1)
         model->processPacket(out, socket->getBuffer(), recv_bytes);
     }
 

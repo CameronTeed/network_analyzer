@@ -8,7 +8,7 @@
 class Controller
 {   
 public:
-    Controller(int timeSeconds);
+    Controller(int timeSeconds, int displayData, int testing);
     ~Controller();
     void run();
 private:
@@ -17,6 +17,8 @@ private:
     View *view;
     Socket *socket;
     int timeSeconds;
+    int displayData;
+    int testing;
 };
 
 
