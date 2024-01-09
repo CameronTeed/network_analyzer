@@ -27,11 +27,12 @@ void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
     out << "\nData\n";
     int remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
     for (int i = 0; i < remaining_data; i++) {
-        if (i != 0 && i % 16 == 0)
+        if (i != 0 && i % 50 == 0)
             out << "\n";
-         if (isprint(data[i])) {
-            out << static_cast<char>(data[i]);
-         }
+
+        if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
+            out << data[i];
+        }
     }
 
     out << "\n";

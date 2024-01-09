@@ -33,10 +33,10 @@ int Socket::receivePacket() {
     int saddr_len = sizeof(saddr);
     int recv_bytes = recvfrom(sock,buffer,65535,0,&saddr,(socklen_t *)&saddr_len);
     if (recv_bytes < 0) {
-        cout << "Error receiving packet" << endl;
+        //cout << "Error receiving packet" << endl;
         return -1;
     }
-    cout << "Packet received" << endl;
+    //cout << "Packet received" << endl;
     return recv_bytes;
 }
 

@@ -3,8 +3,11 @@ objects = main.o Socket.o View.o Model.o Controller.o
 main: $(objects)
 	g++ -o main $(objects)
 
+test:
+	sudo python3 ./test.py
+
 main.o: main.cpp
-	g++ -c main.cpp
+	g++ -c main.cpp 
 
 socket.o: Socket.cpp
 	g++ -c Socket.cpp
@@ -12,11 +15,11 @@ socket.o: Socket.cpp
 View.o: View.cpp	
 	g++ -c View.cpp
 
-Model.o: Model.cpp	
+Model.o: Model.cpp 
 	g++ -c Model.cpp
 
-Controller.o: Controller.cpp	
-	g++ -c Controller.cpp	
+Controller.o: Controller.cpp Controller.h
+	g++ -c Controller.cpp
 
 
 clean: 
