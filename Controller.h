@@ -4,7 +4,6 @@
 #include "View.h"
 #include <chrono>
 #include "Socket.h"
-#include <gtest/gtest.h>
 
 class Controller
 {   
