@@ -4,8 +4,8 @@ testObjects = Tester.o Socket.o View.o Model.o Controller.o
 main: $(objects)
 	g++ -o main $(objects)
 
-tester: $(testObjects)
-	g++ -o main $(testObjects)
+testmake: $(testObjects)
+	g++ -o tester $(testObjects)
 
 test:
 	sudo python3 ./test.py
@@ -30,4 +30,4 @@ Controller.o: Controller.cpp Controller.h
 
 
 clean: 
-	rm -f ./main ./output.txt $(objects)
+	rm -f ./main ./output.txt ./tester $(objects)
