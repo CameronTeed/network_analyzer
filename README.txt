@@ -1,3 +1,14 @@
+# Network Analyzer
+
+Captures network packets on linux and displays them to an output file.
+
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
 - [Contributing](#contributing)
 - [License](#license)
 
