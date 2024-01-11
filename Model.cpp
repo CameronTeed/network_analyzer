@@ -3,11 +3,13 @@
 Model::Model()
 {
     testing = 0;
+    protocol = -1;
     //ctor
 }
 
 Model::Model(int testing): testing(testing)
 {
+    protocol = -1;
     //ctor
 }
 
@@ -17,13 +19,9 @@ Model::~Model()
 }
 
 void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) const {
-    // Your packet processing logic goes here
-    // This function can analyze and print information about the packet
-    // For simplicity, this example just prints the first few bytes of the packet
-    // if (testing == 1) {
-    //     return;
-    // }
 
+    struct iphdr *ip = (struct iphdr *)(buffer + sizeof(struct ethhdr));
+    int iphdrlen =ip->ihl*4;
     unsigned char* data;
     int remaining_data;
     if (protocol == 6) {
@@ -45,7 +43,6 @@ void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) c
 
 
         if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
-            cout << data[i];
             out << data[i];
         }
     }
@@ -81,7 +78,7 @@ void Model::print_ip_header(ofstream&  out, unsigned char *buffer, int size) {
     source.sin_addr.s_addr = ip->saddr;
     memset(&dest, 0, sizeof(dest));
     dest.sin_addr.s_addr = ip->daddr;
-    iphdrlen =ip->ihl*4;
+    int iphdrlen =ip->ihl*4;
 
     out << "\nIP Header\n" << endl;
     out << "\t|-Version : " << (unsigned int)ip->version << endl;
@@ -294,7 +291,7 @@ void Model::print_tcp_header(ofstream&  out, unsigned char *buffer, int size) co
 
 void Model::protocolSwitch(ofstream& out, unsigned char *buffer) {
     struct iphdr *ip = (struct iphdr*)(buffer + sizeof (struct ethhdr));
-
+    int iphdrlen =ip->ihl*4;
     protocol = static_cast<unsigned int>(ip->protocol);
     out << "\nProtocol : "; 
     out << protocol << endl;

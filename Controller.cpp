@@ -14,6 +14,7 @@ Controller::~Controller()
 {
     delete this->model;
     delete this->view;
+    delete this->socket;
 }
 
 void Controller::run() const

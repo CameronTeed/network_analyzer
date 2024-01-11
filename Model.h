@@ -33,7 +33,6 @@ public:
     void protocolSwitch(ofstream&  out, unsigned char *buffer);
 
 private:
-    int iphdrlen;
     unsigned int protocol;
     int testing;
 };

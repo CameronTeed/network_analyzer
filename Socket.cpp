@@ -9,7 +9,7 @@ Socket::~Socket() {
 int Socket::createSocket() {
     sock = socket(AF_PACKET,SOCK_RAW,htons(ETH_P_ALL));;
     if (sock < 0) {
-        cout << "Socket creation failed" << endl;
+        cerr << "Socket creation failed" << endl;
         return -1;
     }
     cout << "Socket created" << endl;
@@ -18,7 +18,7 @@ int Socket::createSocket() {
 
 int Socket::closeSocket() {
     if (close(sock) < 0) {
-        cout << "Socket close failed" << endl;
+        cerr << "Socket close failed" << endl;
         return -1;
     }
     cout << "Socket closed" << endl;
@@ -33,7 +33,7 @@ int Socket::receivePacket() {
     int saddr_len = sizeof(saddr);
     int recv_bytes = recvfrom(sock,buffer,65535,0,&saddr,(socklen_t *)&saddr_len);
     if (recv_bytes < 0) {
-        //cout << "Error receiving packet" << endl;
+        cerr << "Error receiving packet" << endl;
         return -1;
     }
     //cout << "Packet received" << endl;
