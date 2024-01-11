@@ -16,7 +16,7 @@ Controller::~Controller()
     delete this->view;
 }
 
-void Controller::run()
+void Controller::run() const
 {
     auto startTime = std::chrono::steady_clock::now();
     auto stopTime = startTime + std::chrono::seconds(timeSeconds);

@@ -34,7 +34,7 @@ int View::createFileApp()
     return 0;
 }
 
-ofstream& View::getFile()
+ofstream& View::getFile() const
 {
     return *file;
 }

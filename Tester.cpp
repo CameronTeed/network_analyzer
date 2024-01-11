@@ -10,6 +10,7 @@ TEST(TestSocket, TestConnection)
 TEST(TestView, TestFileIO) {
     View * v = new View();
     v->getFile();
+    delete v;
 }
 
 TEST(TestModel, TestEthernet) {
@@ -17,6 +18,8 @@ TEST(TestModel, TestEthernet) {
     Model * m = new Model();
     initPacket0();
     m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
+    delete m;
+    delete v;
 }
 
 TEST(TestModel, TestIP) {
@@ -24,6 +27,8 @@ TEST(TestModel, TestIP) {
     Model * m = new Model();
     m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
     m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
+    delete m;
+    delete v;
 }
 
 TEST(TestModel, TestProt) {
@@ -32,6 +37,8 @@ TEST(TestModel, TestProt) {
     m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
     m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
     m->protocolSwitch(v->getFile(), PACKET0);
+    delete m;
+    delete v;
 }
 
 TEST(TestModel, TestPayload) {
@@ -42,6 +49,8 @@ TEST(TestModel, TestPayload) {
     m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
     m->protocolSwitch(v->getFile(), PACKET0);
     m->processPacket(v->getFile(), PACKET0, sizeof(PACKET0));
+    delete m;
+    delete v;
 }
 
 
@@ -82,7 +91,7 @@ void initPacket0() {
     tcpPacket->urgentPointer = 0;
 
     // Insert payload data
-    const char* payloadData = "{This is a test TCP packet.123445431211222}";
+    const char* payloadData = "This is a test payload!";
     strncpy((char*)tcpPacket->payload, payloadData, sizeof(tcpPacket->payload));
 
 }

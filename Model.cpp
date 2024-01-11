@@ -16,7 +16,7 @@ Model::~Model()
     //dtor
 }
 
-void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
+void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) const {
     // Your packet processing logic goes here
     // This function can analyze and print information about the packet
     // For simplicity, this example just prints the first few bytes of the packet
@@ -28,11 +28,11 @@ void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
     int remaining_data;
     if (protocol == 6) {
         data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct tcphdr));
-        out << "\nData\n";
+        out << "\nData:\n";
         remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct tcphdr));
     } else if (protocol == 17) {
         data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
-        out << "\nData\n";
+        out << "\nData:\n";
         remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
 
     } else {
@@ -43,15 +43,16 @@ void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
         if (i != 0 && i % 50 == 0)
             out << "\n";
 
-        //if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
-            out << data[i];
-        //}
-    }
 
+        if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
+            cout << data[i];
+            out << data[i];
+        }
+    }
     out << "\n";
 }
 
-void Model::print_ethernet_header(ofstream&  out, unsigned char *buffer, int size) {
+void Model::print_ethernet_header(ofstream&  out, unsigned char *buffer, int size) const {
     struct ethhdr *eth = (struct ethhdr *)(buffer);
 
     out << "\nEthernet Header\n" << endl;
@@ -95,7 +96,7 @@ void Model::print_ip_header(ofstream&  out, unsigned char *buffer, int size) {
     out << "\t|-Destination IP : " << inet_ntoa(dest.sin_addr) << endl;
 }
 
-void Model::printProtocol(ofstream&  out, int prot){
+void Model::printProtocol(ofstream&  out, int prot) const {
 
     switch(prot) {
     case 0: out << "	HOPOPT	IPv6 Hop-by-Hop Option	Y	[RFC8200] " << endl; break;
@@ -259,7 +260,7 @@ void Model::printProtocol(ofstream&  out, int prot){
     }
 }
 
-void Model::print_udp_header(ofstream&  out, unsigned char *buffer, int size) {
+void Model::print_udp_header(ofstream&  out, unsigned char *buffer, int size) const {
     // getting actual size of IP header
 
     // getting pointer to udp header
@@ -270,7 +271,7 @@ void Model::print_udp_header(ofstream&  out, unsigned char *buffer, int size) {
     out << "\t|-UDP Checksum : " << ntohs(udp->check) << endl;  //  ntohs() function converts the unsigned short integer netshort from network byte order to host byte order.
 }
 
-void Model::print_tcp_header(ofstream&  out, unsigned char *buffer, int size) {
+void Model::print_tcp_header(ofstream&  out, unsigned char *buffer, int size) const {
     // getting pointer to tcp header
     struct tcphdr *tcp = (struct tcphdr *)(buffer + size + sizeof(struct ethhdr));
     out << "\nTCP Header\n";

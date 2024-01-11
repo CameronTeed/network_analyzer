@@ -12,7 +12,7 @@ public:
     View();
     View(int);
     ~View();
-    ofstream& getFile();
+    ofstream& getFile() const;
     private:
         int createFileApp();
         int createFile();
