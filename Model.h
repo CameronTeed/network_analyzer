@@ -28,13 +28,14 @@ public:
     void print_ethernet_header(ofstream&  out, unsigned char *buffer, int size) const;
     void print_ip_header(ofstream&  out, unsigned char *buffer, int size);
     void printProtocol(ofstream&  out, int prot) const;
-    void print_udp_header(ofstream&  out, unsigned char *buffer, int size) const;
-    void print_tcp_header(ofstream&  out, unsigned char *buffer, int size) const;
     void protocolSwitch(ofstream&  out, unsigned char *buffer);
 
 private:
     unsigned int protocol;
     int testing;
+
+    void print_udp_header(ofstream&  out, unsigned char *buffer, int size) const;
+    void print_tcp_header(ofstream&  out, unsigned char *buffer, int size) const;
 };
 
 
