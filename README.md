@@ -30,10 +30,18 @@ Make sure you have the following software installed before running the applicati
    git clone https://github.com/CameronTeed/Network_Analyzer
 
 # Usage
+
+   Running:
    ```bash
    Make
+   Make run
+  ```
+  Testing:
+   ```bash
+   Make testmake
    Make test
   ```
+
 # Contributing
 
 Fork Branch and create pull request
