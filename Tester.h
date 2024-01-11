@@ -42,29 +42,10 @@ struct TCPPacket {
 unsigned char PACKET0[65535];
 // 23    4.740034    2620:22:4000:1201:1867:ff3e:6458:5ad7    2607:f8b0:4020:807::200e    TCP    75    62958 → 443 [ACK] Seq=1 Ack=1 Win=511 Len=1 [TCP segment of a reassembled PDU]
 
-unsigned char* PACKET1[65535];
+unsigned char* PACKET1[65535]; 
 unsigned char PACKET2[65535] = {};
 
+void initPacket0();
 
-class Tester
-{
-public:
-    Tester();
-    ~Tester();
-    void run();
-    void testSocket();
-    void testModel();
-    void testView();
-
-    void testEth();
-    void testIP();
-    void testTCP();
-    void testUDP();
-    void testPayload();
-    void initPacket0();
-
-private:
-    View* v;
-};
 
 #endif

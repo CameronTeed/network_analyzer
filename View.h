@@ -10,9 +10,11 @@ class View
 {
 public:
     View();
+    View(int);
     ~View();
     ofstream& getFile();
     private:
+        int createFileApp();
         int createFile();
         ofstream* file;
 };

@@ -23,16 +23,29 @@ void Model::processPacket(std::ofstream& out, unsigned char* buffer, int size) {
     // if (testing == 1) {
     //     return;
     // }
-    unsigned char* data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
-    out << "\nData\n";
-    int remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
+
+    unsigned char* data;
+    int remaining_data;
+    if (protocol == 6) {
+        data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct tcphdr));
+        out << "\nData\n";
+        remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct tcphdr));
+    } else if (protocol == 17) {
+        data = (buffer + iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
+        out << "\nData\n";
+        remaining_data = size - (iphdrlen + sizeof(struct ethhdr) + sizeof(struct udphdr));
+
+    } else {
+        out << "Data not printed because it is neither UDP nor TCP.";
+        return;
+    }
     for (int i = 0; i < remaining_data; i++) {
         if (i != 0 && i % 50 == 0)
             out << "\n";
 
-        if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
+        //if (isprint(data[i]) || data[i] == '\n' || data[i] == '\t' || data[i] == '\r' || data[i] == '\v' || data[i] == '\f') {
             out << data[i];
-        }
+        //}
     }
 
     out << "\n";

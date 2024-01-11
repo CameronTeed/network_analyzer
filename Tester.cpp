@@ -1,41 +1,52 @@
 #include "Tester.h"
 
-
-Tester::Tester()
-{
-
-}
-
-void Tester::run()
-{
-    testSocket();
-    testView();
-    testModel();
-}
-
-void Tester::testSocket()
+TEST(TestSocket, TestConnection)
 {
     Socket *s = new Socket();
     EXPECT_GT(s->createSocket(), -1) << "Socket creation failed";
     EXPECT_GT(s->closeSocket(), -1) << "Socket creation failed";
 }
 
-void Tester::testModel() {
+TEST(TestView, TestFileIO) {
+    View * v = new View();
+    v->getFile();
+}
+
+TEST(TestModel, TestEthernet) {
+    View* v = new View();
     Model * m = new Model();
+    initPacket0();
     m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
 }
 
-void Tester::testView() {
-    v = new View();
+TEST(TestModel, TestIP) {
+    View* v = new View();
+    Model * m = new Model();
+    m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
+    m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
 }
 
-int main(int argc, char **argv) {
-    Tester*t = new Tester();
-    t->run();
-    return 0;
+TEST(TestModel, TestProt) {
+    View* v = new View();
+    Model * m = new Model();
+    m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
+    m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
+    m->protocolSwitch(v->getFile(), PACKET0);
 }
 
-void Tester::initPacket0() {
+TEST(TestModel, TestPayload) {
+    TCPPacket pack;
+    View* v = new View();
+    Model * m = new Model();
+    m->print_ethernet_header(v->getFile(), PACKET0, sizeof(EthernetHeader));
+    m->print_ip_header(v->getFile(), PACKET0, sizeof(IPHeader));
+    m->protocolSwitch(v->getFile(), PACKET0);
+    m->processPacket(v->getFile(), PACKET0, sizeof(PACKET0));
+}
+
+
+void initPacket0() {
+    View * v = new View();
 // Initialize fake Ethernet header
     memset(PACKET0, 0, sizeof(PACKET0));
     // Type cast structures and copy their data to PACKET0
@@ -71,7 +82,14 @@ void Tester::initPacket0() {
     tcpPacket->urgentPointer = 0;
 
     // Insert payload data
-    const char* payloadData = "This is a test TCP packet.";
+    const char* payloadData = "{This is a test TCP packet.123445431211222}";
     strncpy((char*)tcpPacket->payload, payloadData, sizeof(tcpPacket->payload));
 
+}
+
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+    return 0;
 }

@@ -5,12 +5,12 @@ main: $(objects)
 	g++ -o main $(objects)
 
 testmake: $(testObjects)
-	g++ -o tester $(testObjects)
+	g++ -o tester $(testObjects) -lgtest -lgtest_main
 
-test:
+run:
 	sudo python3 ./test.py
 
-tester:
+test:
 	sudo ./tester
 
 main.o: main.cpp
